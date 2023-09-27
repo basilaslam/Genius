@@ -2,7 +2,7 @@
 
 import * as z from "zod";
 import axios from "axios";
-import { Music } from "lucide-react";
+import { VideoIcon } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { useRef, useState } from "react";
 import { toast } from "react-hot-toast";
@@ -17,10 +17,10 @@ import { Loader } from "@/components/loader";
 import { formSchema } from "./constants";
 import { Empty } from "@/components/ui/empty";
 
-const MusicPage = () => {
+const VideoPage = () => {
   
   const chatEndRef = useRef<HTMLDivElement>(null);
-  const [music, setMusic] = useState<string>();
+  const [video, setVideo] = useState<string>();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -34,10 +34,10 @@ const MusicPage = () => {
   
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
-      setMusic(undefined)
-      const response = await axios.post('/api/music', values);
+      setVideo(undefined)
+      const response = await axios.post('/api/video', values);
       console.log(response);
-      setMusic(response.data.audio)
+      setVideo(response.data[0])
       
       form.reset();
     } catch (error: any) {
@@ -48,11 +48,11 @@ const MusicPage = () => {
   return ( 
     <div>
             <Heading
-        title="Music Generator"
-        description="Turn your prompt into music."
-        icon={Music}
-        iconColor="text-emerald-500"
-        bgColor="bg-emerald-500/10"
+        title="Video Generator"
+        description="Turn your prompt into videos."
+        icon={VideoIcon}
+        iconColor="text-orange-700"
+        bgColor="bg-orange-700/10"
       />
       <div className="px-4 lg:px-8">
         <div>
@@ -80,7 +80,7 @@ const MusicPage = () => {
                       <Input
                         className="border-0 outline-none focus-visible:ring-0 focus-visible:ring-transparent"
                         disabled={isLoading} 
-                        placeholder="Drum solo?"
+                        placeholder="Cityscape with neon lights and busy streets."
                         {...field}
                       />
                     </FormControl>
@@ -99,14 +99,14 @@ const MusicPage = () => {
               <Loader />
             </div>
           )}
-          {!music && !isLoading && (
-            <Empty label="No music generated." />
+          {!video && !isLoading && (
+            <Empty label="No video generated." />
           )}
-         {music && (
-          <audio controls
-          className="w-full mt-8">
-            <source src={music}/>
-          </audio>
+         {video && (
+          <video controls
+          className="w-full aspect-video mt-8 rounded-lg border bg-black">
+            <source src={video}/>
+          </video>
          )}
         </div>
       </div>
@@ -114,4 +114,4 @@ const MusicPage = () => {
    );
 }
  
-export default MusicPage;
+export default VideoPage;
