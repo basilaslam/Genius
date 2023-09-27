@@ -2,28 +2,25 @@
 
 import * as z from "zod";
 import axios from "axios";
-import { MessageSquare } from "lucide-react";
+import { Music } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { useRef, useState } from "react";
 import { toast } from "react-hot-toast";
 
-import { BotAvatar } from "@/components/bot-avatar";
 import   Heading  from "@/components/heading";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Form, FormControl, FormField, FormItem } from "@/components/ui/form";
-import { cn } from "@/lib/utils";
 import { Loader } from "@/components/loader";
-import { UserAvatar } from "@/components/user-avatar";
 
 import { formSchema } from "./constants";
 import { Empty } from "@/components/ui/empty";
 
-const ChatPage = () => {
+const MusicPage = () => {
   
   const chatEndRef = useRef<HTMLDivElement>(null);
-  const [messages, setMessages] = useState<{ isUser: boolean; message: string; }[]>([]);
+  const [music, setMusic] = useState<string>();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -37,12 +34,11 @@ const ChatPage = () => {
   
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
-      setMessages((current) => [{ isUser: true, message: values.prompt }, ...current]);
-      
-      const response = await axios.post('/api/conversation', values);
+      setMusic(undefined)
+      const response = await axios.post('/api/music', values);
       console.log(response);
+      setMusic(response.data.audio)
       
-      setMessages((current) => [{ isUser: false, message: response.data }, ...current]);
       form.reset();
     } catch (error: any) {
       toast.error("Something went wrong.");
@@ -51,12 +47,12 @@ const ChatPage = () => {
 
   return ( 
     <div>
-      <Heading
-        title="Conversation"
-        description="Our most advanced conversation model."
-        icon={MessageSquare}
-        iconColor="text-violet-500"
-        bgColor="bg-violet-500/10"
+            <Heading
+        title="Music Generator"
+        description="Turn your prompt into music."
+        icon={Music}
+        iconColor="text-emerald-700"
+        bgColor="bg-emerald-700/10"
       />
       <div className="px-4 lg:px-8">
         <div>
@@ -103,30 +99,19 @@ const ChatPage = () => {
               <Loader />
             </div>
           )}
-          {messages.length === 0 && !isLoading && (
-            <Empty label="No conversation started." />
+          {!music && !isLoading && (
+            <Empty label="No music generated." />
           )}
-          <div className="flex flex-col-reverse gap-y-4">
-
-          {messages.map((message) => (
-            <div 
-            key={message.message} 
-            className={cn(
-              "p-8 w-full flex items-start gap-x-8 rounded-lg",
-              message.isUser ? "bg-white border border-black/10" : "bg-muted",
-              )}
-              >
-              {!message.isUser ? <BotAvatar /> : <UserAvatar />}
-              <p className="text-sm">
-                {message.message}
-              </p>
-            </div>
-          ))}
-              </div>
+         {music && (
+          <audio controls
+          className="w-full mt-8">
+            <source src={music}/>
+          </audio>
+         )}
         </div>
       </div>
     </div>
    );
 }
  
-export default ChatPage;
+export default MusicPage;

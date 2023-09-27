@@ -21,7 +21,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Card, CardFooter } from "@/components/ui/card";
 import Image from "next/image";
 
-const ChatPage = () => {
+const ImagePage = () => {
   
   const chatEndRef = useRef<HTMLDivElement>(null);
   const  [images, setImages] = useState<string[]>([])
@@ -42,7 +42,6 @@ const ChatPage = () => {
        setImages([])
       const response = await axios.post('/api/image',values);
       console.log(response);
-      
       const urls = response.data.map((image:{url: string}) => image.url)
       setImages(urls)
     form.reset();
@@ -182,4 +181,4 @@ const ChatPage = () => {
    );
 }
  
-export default ChatPage;
+export default ImagePage;
