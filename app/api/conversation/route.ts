@@ -35,7 +35,6 @@ export async function POST(req: Request){
         let answer = chatCompletion.choices[0].message.content
         
         
-
         return new NextResponse(answer, {status: 200})
     }catch (err){
         console.log("[Conversation_error", err);
