@@ -16,9 +16,11 @@ import { Loader } from "@/components/loader";
 
 import { formSchema } from "./constants";
 import { Empty } from "@/components/ui/empty";
+import { useRouter } from "next/navigation";
 
 const MusicPage = () => {
-  
+
+  const router = useRouter()
   const chatEndRef = useRef<HTMLDivElement>(null);
   const [music, setMusic] = useState<string>();
 
@@ -42,6 +44,8 @@ const MusicPage = () => {
       form.reset();
     } catch (error: any) {
       toast.error("Something went wrong.");
+    }finally{
+      router.refresh()
     }
   }
 

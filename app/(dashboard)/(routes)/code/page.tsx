@@ -7,6 +7,7 @@ import { useForm } from "react-hook-form";
 import { useRef, useState } from "react";
 import { toast } from "react-hot-toast";
 import ReactMarkdown from 'react-markdown'
+import { useRouter } from 'next/navigation'
 import { BotAvatar } from "@/components/bot-avatar";
 import   Heading  from "@/components/heading";
 import { Button } from "@/components/ui/button";
@@ -21,7 +22,7 @@ import { formSchema } from "./constants";
 import { Empty } from "@/components/ui/empty";
 
 const CodePage = () => {
-  
+  const router = useRouter()
   const chatEndRef = useRef<HTMLDivElement>(null);
   const [messages, setMessages] = useState<{ isUser: boolean; message: string; }[]>([]);
 
@@ -41,11 +42,15 @@ const CodePage = () => {
       
       const response = await axios.post('/api/code', values);
       console.log(response);
-      
+      console.log('hey');
+       
       setMessages((current) => [{ isUser: false, message: response.data }, ...current]);
-      form.reset();
+        form.reset();
+      
     } catch (error: any) {
       toast.error("Something went wrong.");
+    }finally{
+      router.refresh();
     }
   }
 
@@ -106,9 +111,11 @@ const CodePage = () => {
           {messages.length === 0 && !isLoading && (
             <Empty label="No conversation started." />
           )}
-          {messages.map((message) => (
+          <div className="flex flex-col-reverse gap-y-4">
+            
+          {messages.map((message, index) => (
             <div 
-              key={message.message} 
+              key={index} 
               className={cn(
                 "p-8 w-full flex items-start gap-x-8 rounded-lg",
                 message.isUser ? "bg-white border border-black/10" : "bg-muted",
@@ -116,8 +123,8 @@ const CodePage = () => {
             >
               {!message.isUser ? <BotAvatar /> : <UserAvatar />}
               <ReactMarkdown components={{
-                  pre: ({ node, ...props }) => (
-                    <div className="overflow-auto w-full my-2 bg-black/10 p-2 rounded-lg">
+                pre: ({ node, ...props }) => (
+                  <div className="overflow-auto w-full my-2 bg-black/10 p-2 rounded-lg">
                       <pre {...props} />
                     </div>
                   ),
@@ -129,6 +136,7 @@ const CodePage = () => {
                 </ReactMarkdown>
             </div>
           ))}
+          </div>
         </div>
       </div>
     </div>

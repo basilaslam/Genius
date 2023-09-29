@@ -2,6 +2,7 @@ import { auth } from "@clerk/nextjs";
 import { ok } from "assert";
 import { NextResponse } from "next/server";
 import { OpenAI } from "openai";
+import { increaseApiLimit, checkApiLimit } from "@/lib/api-limit";
 const openai = new OpenAI({
     apiKey: process.env.OPENAI_API_KEY
 })
@@ -36,6 +37,13 @@ export async function POST(req: Request){
             return new NextResponse("Resolution are required", {status: 400})
         }
 
+        const freeTriel = await checkApiLimit()
+
+        if(!freeTriel){
+            return new NextResponse("Free triel has expired",{status: 403})
+        }
+        
+
 
         const chatCompletion = await openai.images.generate({
             prompt,
@@ -44,7 +52,7 @@ export async function POST(req: Request){
         })
 
         let answer = chatCompletion.data
-        
+        await increaseApiLimit()
         return new NextResponse (JSON.stringify(answer), {status: 200})
     }catch (err){
         console.log("[Conversation_error", err);

@@ -20,9 +20,11 @@ import { Empty } from "@/components/ui/empty";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card, CardFooter } from "@/components/ui/card";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 
 const ImagePage = () => {
-  
+  const router = useRouter()
+
   const chatEndRef = useRef<HTMLDivElement>(null);
   const  [images, setImages] = useState<string[]>([])
   const form = useForm<z.infer<typeof formSchema>>({
@@ -47,6 +49,8 @@ const ImagePage = () => {
     form.reset();
     } catch (error: any) {
       toast.error("Something went wrong.");
+    }finally{
+      router.refresh();
     }
   }
 
