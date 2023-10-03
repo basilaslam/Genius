@@ -6,6 +6,7 @@ import { MAX_FREE_COUNTS } from "@/constants"
 import { Progress } from "@/components/ui/progress"
 import { Zap } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import axios from "axios"
 
 interface freeCounterProps {
     apiLimitCount: number
@@ -14,6 +15,7 @@ interface freeCounterProps {
 const FreeCounter = ({apiLimitCount = 0}:freeCounterProps) => {
 
     const [mounted, setMounted] = useState(false)
+    const [loading, setLoading] = useState(false)
 
     useEffect(() => {
         setMounted(true)
@@ -22,6 +24,18 @@ const FreeCounter = ({apiLimitCount = 0}:freeCounterProps) => {
 
     if(!mounted){
         return null
+    }
+
+    const onSubscribe = async() => {
+        try {
+            setLoading(true)
+            const response = await axios.get("/api/stripe");
+            window.location.href = response.data.url
+        } catch (error) {
+            console.log(error, "STRIPE URL ERROR"); 
+        }finally{
+            setLoading(false)
+        }
     }
 
 
@@ -36,7 +50,7 @@ const FreeCounter = ({apiLimitCount = 0}:freeCounterProps) => {
                     <Progress className="h-3" value={(apiLimitCount / MAX_FREE_COUNTS) * 100}/>
                 </div>
 
-                <Button className="w-full" variant="premium">
+                <Button onClick={onSubscribe} className="w-full" variant="premium">
                     Upgrade 
                     <Zap className="w-4 h-4 ml-2 fill-white"/>
                 </Button>
