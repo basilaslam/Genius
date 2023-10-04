@@ -9,10 +9,11 @@ import { Button } from "@/components/ui/button"
 import axios from "axios"
 
 interface freeCounterProps {
-    apiLimitCount: number
+    apiLimitCount: number,
+    isPro: boolean
 }
 
-const FreeCounter = ({apiLimitCount = 0}:freeCounterProps) => {
+const FreeCounter = ({apiLimitCount = 0, isPro = false}:freeCounterProps) => {
 
     const [mounted, setMounted] = useState(false)
     const [loading, setLoading] = useState(false)
@@ -23,6 +24,10 @@ const FreeCounter = ({apiLimitCount = 0}:freeCounterProps) => {
 
 
     if(!mounted){
+        return null
+    }
+
+    if(isPro){
         return null
     }
 
