@@ -3,6 +3,7 @@ import { ok } from "assert";
 import { NextResponse } from "next/server";
 import Replicate from 'replicate'
 import { increaseApiLimit, checkApiLimit } from "@/lib/api-limit";
+import { checkSubscription } from "@/lib/subscription";
 
 const replicate = new Replicate({
     auth: process.env.REPLICATE_API_TOKEN!,
@@ -26,7 +27,7 @@ export async function POST(req: Request){
 
         const freeTriel = await checkApiLimit()
 
-        if(!freeTriel){
+        if(!freeTriel && !await checkSubscription()){
             return new NextResponse("Free triel has expired",{status: 403})
         }
 
@@ -38,8 +39,9 @@ export async function POST(req: Request){
                 prompt_a: prompt
               }
             })
-        await increaseApiLimit()
-        return NextResponse.json(output, {status: 200})
+            if(!await checkSubscription()){
+                await increaseApiLimit()
+              }        return NextResponse.json(output, {status: 200})
     }catch (err){
         console.log("[Music_error", err);
         return new NextResponse("Internal error", {status: 500})
