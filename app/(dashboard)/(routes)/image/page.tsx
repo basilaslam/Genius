@@ -21,9 +21,11 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Card, CardFooter } from "@/components/ui/card";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
+import { userProModal } from "@/hooks/use-pro-modal";
 
 const ImagePage = () => {
   const router = useRouter()
+  const proModal = userProModal()
 
   const chatEndRef = useRef<HTMLDivElement>(null);
   const  [images, setImages] = useState<string[]>([])
@@ -48,8 +50,9 @@ const ImagePage = () => {
       setImages(urls)
     form.reset();
     } catch (error: any) {
-      toast.error("Something went wrong.");
-    }finally{
+      if(error?.response?.status === 403){
+        proModal.onOpen()
+      }    }finally{
       router.refresh();
     }
   }

@@ -1,6 +1,7 @@
 import './globals.css'
 import type { Metadata } from 'next'
 import {ClerkProvider} from '@clerk/nextjs'
+import { ModalProvider } from '@/components/modal-provider'
 
 export const metadata: Metadata = {
   title: 'Genius',
@@ -15,6 +16,7 @@ export default function RootLayout({
   return (
     <ClerkProvider>
     <html lang="en">
+      <ModalProvider/>
       <body>{children}</body>
     </html>
     </ClerkProvider>

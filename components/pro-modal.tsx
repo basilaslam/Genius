@@ -8,9 +8,13 @@ import { Card } from "./ui/card"
 import { cn } from "@/lib/utils"
 import { Check, Zap } from "lucide-react"
 import { Button } from "./ui/button"
+import { useEffect, useState } from "react"
 
 export const ProModal = () => {
+    const [isMounted, setIsMounted] = useState(false)
     const proModal = userProModal()
+
+
     return(
         <Dialog open={proModal.isOpen} onOpenChange={proModal.onClose}>
             <DialogContent>

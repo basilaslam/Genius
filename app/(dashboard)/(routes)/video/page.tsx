@@ -17,9 +17,11 @@ import { Loader } from "@/components/loader";
 import { formSchema } from "./constants";
 import { Empty } from "@/components/ui/empty";
 import { useRouter } from "next/navigation";
+import { userProModal } from "@/hooks/use-pro-modal";
 
 const VideoPage = () => {
-  
+  const proModal = userProModal()
+
   const router = useRouter()
   const chatEndRef = useRef<HTMLDivElement>(null);
   const [video, setVideo] = useState<string>();
@@ -43,8 +45,9 @@ const VideoPage = () => {
       
       form.reset();
     } catch (error: any) {
-      toast.error("Something went wrong.");
-    }finally{
+      if(error?.response?.status === 403){
+        proModal.onOpen()
+      }    }finally{
       router.refresh()
     }
   }
