@@ -20,9 +20,11 @@ import { UserAvatar } from "@/components/user-avatar";
 
 import { formSchema } from "./constants";
 import { Empty } from "@/components/ui/empty";
+import { userProModal } from "@/hooks/use-pro-modal";
 
 const CodePage = () => {
   const router = useRouter()
+  const proModal = userProModal()
   const chatEndRef = useRef<HTMLDivElement>(null);
   const [messages, setMessages] = useState<{ isUser: boolean; message: string; }[]>([]);
 
@@ -48,7 +50,9 @@ const CodePage = () => {
         form.reset();
       
     } catch (error: any) {
-      toast.error("Something went wrong.");
+      if(error?.response?.status === 403){
+        proModal.onOpen()
+      }
     }finally{
       router.refresh();
     }
