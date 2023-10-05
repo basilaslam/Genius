@@ -16,7 +16,7 @@ interface freeCounterProps {
     isPro: boolean
 }
 
-const FreeCounter = ({apiLimitCount = 0}:freeCounterProps) => {
+const FreeCounter = ({apiLimitCount = 0, isPro = false}:freeCounterProps) => {
     const proModal = userProModal()
     const [mounted, setMounted] = useState(false)
     const [loading, setLoading] = useState(false)
