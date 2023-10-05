@@ -52,7 +52,10 @@ const ImagePage = () => {
     } catch (error: any) {
       if(error?.response?.status === 403){
         proModal.onOpen()
-      }    }finally{
+      }else{
+        toast.error("something went wrong")
+      }
+    }finally{
       router.refresh();
     }
   }

@@ -45,9 +45,15 @@ const VideoPage = () => {
       
       form.reset();
     } catch (error: any) {
+      
       if(error?.response?.status === 403){
         proModal.onOpen()
-      }    }finally{
+      }else{
+        console.log(error);
+        
+        toast.error("something went wrong")
+      }
+    }finally{
       router.refresh()
     }
   }
