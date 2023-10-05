@@ -19,7 +19,6 @@ interface freeCounterProps {
 const FreeCounter = ({apiLimitCount = 0, isPro = false}:freeCounterProps) => {
     const proModal = userProModal()
     const [mounted, setMounted] = useState(false)
-    const [loading, setLoading] = useState(false)
 
     useEffect(() => {
         setMounted(true)
@@ -34,17 +33,7 @@ const FreeCounter = ({apiLimitCount = 0, isPro = false}:freeCounterProps) => {
         return null
     }
 
-    const onSubscribe = async() => {
-        try {
-            setLoading(true)
-            const response = await axios.get("/api/stripe");
-            window.location.href = response.data.url
-        } catch (error) {
-            console.log(error, "STRIPE URL ERROR"); 
-        }finally{
-            setLoading(false)
-        }
-    }
+
 
 
     return(
