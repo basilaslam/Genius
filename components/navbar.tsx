@@ -4,14 +4,15 @@ import { UserButton } from "@clerk/nextjs"
 import MobileSidebar from "./mobile-sidebar"
 
 interface NavbarProps {
-    apiLimitCount: number
+    apiLimitCount: number,
+    isPro: boolean
 }
 
 
-const Navbar = ({ apiLimitCount = 0 }:NavbarProps) => {
+const Navbar = ({ apiLimitCount = 0, isPro = false }:NavbarProps) => {
 return (
     <div className="flex items-center p-4">
-        <MobileSidebar apiLimitCount={apiLimitCount}/>
+        <MobileSidebar apiLimitCount={apiLimitCount} isPro={isPro}/>
 
 
         <div className="flex w-full justify-end">

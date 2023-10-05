@@ -3,6 +3,7 @@ import { ok } from "assert";
 import { NextResponse } from "next/server";
 import { OpenAI } from "openai";
 import { increaseApiLimit, checkApiLimit } from "@/lib/api-limit";
+import { checkSubscription } from "@/lib/subscription";
 const openai = new OpenAI({
     apiKey: process.env.OPENAI_API_KEY
 })
@@ -39,7 +40,7 @@ export async function POST(req: Request){
 
         const freeTriel = await checkApiLimit()
 
-        if(!freeTriel){
+        if(!freeTriel && !await checkSubscription()){
             return new NextResponse("Free triel has expired",{status: 403})
         }
         
@@ -52,8 +53,9 @@ export async function POST(req: Request){
         })
 
         let answer = chatCompletion.data
-        await increaseApiLimit()
-        return new NextResponse (JSON.stringify(answer), {status: 200})
+        if(!await checkSubscription()){
+            await increaseApiLimit()
+          }        return new NextResponse (JSON.stringify(answer), {status: 200})
     }catch (err){
         console.log("[Conversation_error", err);
         return new NextResponse("Internal error", {status: 500})

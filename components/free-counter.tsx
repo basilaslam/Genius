@@ -8,15 +8,19 @@ import { Zap } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { userProModal } from "@/hooks/use-pro-modal"
 
+import axios from "axios"
+
+
 interface freeCounterProps {
-    apiLimitCount: number
+    apiLimitCount: number,
+    isPro: boolean
 }
 
 const FreeCounter = ({apiLimitCount = 0}:freeCounterProps) => {
     const proModal = userProModal()
-
     const [mounted, setMounted] = useState(false)
-    
+    const [loading, setLoading] = useState(false)
+
     useEffect(() => {
         setMounted(true)
     }, [])
@@ -24,6 +28,22 @@ const FreeCounter = ({apiLimitCount = 0}:freeCounterProps) => {
 
     if(!mounted){
         return null
+    }
+
+    if(isPro){
+        return null
+    }
+
+    const onSubscribe = async() => {
+        try {
+            setLoading(true)
+            const response = await axios.get("/api/stripe");
+            window.location.href = response.data.url
+        } catch (error) {
+            console.log(error, "STRIPE URL ERROR"); 
+        }finally{
+            setLoading(false)
+        }
     }
 
 
@@ -39,7 +59,7 @@ const FreeCounter = ({apiLimitCount = 0}:freeCounterProps) => {
                 </div>
 
                 <Button onClick={proModal.onOpen} className="w-full" variant="premium">
-                    Upgrade 
+                    Upgrade
                     <Zap className="w-4 h-4 ml-2 fill-white"/>
                 </Button>
                 </CardContent>
