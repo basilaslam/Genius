@@ -11,7 +11,6 @@ import { useEffect, useState } from "react"
 import axios from "axios"
 
 export const ProModal = () => {
-    const [isMounted, setIsMounted] = useState(false)
     const [isLoading, setIsLoading] = useState(false)
     const proModal = userProModal()
 
